@@ -6,11 +6,13 @@ export function useLocalStorage(key, defaultValue) {
 
   const setValue = useCallback(
     (value) => {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      setItem(key, valueToStore);
+      setStoredValue((prev) => {
+        const valueToStore = value instanceof Function ? value(prev) : value;
+        setItem(key, valueToStore);
+        return valueToStore;
+      });
     },
-    [key, storedValue]
+    [key]
   );
 
   return [storedValue, setValue];
